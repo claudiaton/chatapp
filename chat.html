@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chat App</title>
+    <style>
+        .container {
+            margin: auto;
+            width: 60%;
+            border: 5px solid #000000;
+            padding: 10px;
+        }
+
+        #chatDisplay p {
+            font-size: 25px;
+        }
+
+        .bottom-panel,
+        .bottom-panel input {
+            font-size: 25px;
+        }
+
+        #sendButton {
+            font-size: 22px;
+        }
+    </style>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container" style="height: 500px;max-height: 500px;overflow-y: scroll;">
+        <div id="chatDisplay"></div>
+    </div>
+    <div class="container bottom-panel">
+        <p>Current Server Time: <span id="time-display"></span></p>
+        <p>Your Name: <input type="text" id="name" /></p>
+        <p>Your Message: <input type="text" id="message" style="width: 100%" /></p>
+        <button id='sendButton'>Send Message</button>
+    </div>
+
+    <script>
+        const displayArea = document.querySelector('#chatDisplay');
+
+        const socket = io(); //try to connect to a server on port 3000 (default for this page)
+
+        //capture and log welcome message from the server
+        socket.on('welcome', message => {
+            console.log(message)
+            const pTag = document.createElement('p');
+            pTag.innerText = message;
+            displayArea.appendChild(pTag);
+        })
+
+        socket.on('time', time => {
+            document.querySelector('#time-display').innerHTML= time;
+        })
+
+        //send a message to the server when that button 
+        document.querySelector('#sendButton').addEventListener('click', () => {
+            socket.emit('message', 'The buttom was clicked.Yay!')
+        })
+    </script>
+</body>
+
+</html>
